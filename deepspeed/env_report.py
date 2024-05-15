@@ -80,24 +80,21 @@ def nvcc_version():
     return ".".join(release)
 
 
-def installed_cann_path():
-    if "ASCEND_HOME_PATH" in os.environ or os.path.exists(os.environ["ASCEND_HOME_PATH"]):
-        return os.environ["ASCEND_HOME_PATH"]
-    return None
-
-
-def installed_cann_version():
-    import re
-    ascend_path = installed_cann_path()
-    if ascend_path is None:
-        return f"CANN_HOME does not exist, unable to compile NPU op(s)"
-    cann_version = ""
-    for dirpath, _, filenames in os.walk(os.path.realpath(ascend_path)):
-        if cann_version:
-            break
-        install_files = [file for file in filenames if re.match(r"ascend_.*_install\.info", file)]
-        if install_files:
-            filepath = os.path.join(dirpath, install_files[0])
+def get_shm_size():
+    try:
+        temp_dir = os.getenv('TEMP') or os.getenv('TMP') or os.path.join(os.path.expanduser('~'), 'tmp')
+        shm_stats = psutil.disk_usage(temp_dir)
+        shm_size = shm_stats.total
+        shm_hbytes = human_readable_size(shm_size)
+        warn = []
+        if shm_size < 512 * 1024**2:
+            warn.append(
+                f" {YELLOW} [WARNING] Shared memory size might be too small, consider increasing it. {END}"
+            )
+            # Add additional warnings specific to your use case if needed.
+        return shm_hbytes, warn
+    except Exception as e:
+        return "UNKNOWN", [f"Error getting shared memory size: {e}"]
             with open(filepath, "r") as f:
                 for line in f:
                     if line.find("version") != -1:

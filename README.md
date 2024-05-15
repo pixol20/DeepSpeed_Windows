@@ -1,3 +1,36 @@
+# A DeepSpeed fork that should compile on Windows
+Based on [S95Sedan's instructions](https://github.com/S95Sedan/Deepspeed-Windows) on how to build DeepSpeed but all files are already modified
+## Instructions
+1. Clone this repo
+2. Install Visual C++ build tools, such as [VS2019 C++ x64/x86](https://learn.microsoft.com/en-us/visualstudio/releases/2019/redistribution#vs2019-download) build tools.
+3. Download and install the [Nvidia Cuda Toolkit 12.1](https://developer.nvidia.com/cuda-12-1-0-download-archive)
+4. Edit your Windows environment variables to ensure that CUDA_HOME and CUDA_PATH are set to your Nvidia Cuda Toolkit path. (The folder above the bin folder that nvcc.exe is installed in). Examples are:<br>
+```set CUDA_HOME=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1```<br>
+```set CUDA_PATH=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1```<br>
+
+5. OPTIONAL If you do not have an python environment already created, you can install [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html), then at a command prompt, create and activate your environment with:<br>
+```conda create -n pythonenv python=3.11```<br>
+```activate pythonenv```<br>
+
+6. Launch the Command Prompt cmd with Administrator privilege as it requires admin to allow creating symlink folders.
+7. Install PyTorch, 2.2.1 with CUDA 12.1 into your Python 3.11 environment e.g:<br>
+```activate pythonenv``` (activate your python environment)<br>
+```conda install pytorch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 pytorch-cuda=12.1 -c pytorch -c nvidia```<br>
+(or other torch version of your preference. Please note that compiled wheel will probably only be compatible with torch and python version it was compiled with)
+
+9. In your python environment check that your CUDA_HOME and CUDA_PATH are still pointing to the correct location.<br>
+```set``` (to list and check the windows environment variables. Refer to step 4 if not)
+
+10. Navigate to your deepspeed folder in the Command Prompt:<br>
+```cd c:\DeepSpeed_Windows``` (wherever you extracted it to)
+
+11. Run:<br>
+```build_win.bat```
+
+12. Once you are done building there should be a .whl file is present in:<br>
+```DeepSpeed_Windows/dist/```
+
+
 [![License Apache 2.0](https://badgen.net/badge/license/apache2.0/blue)](https://github.com/Microsoft/DeepSpeed/blob/master/LICENSE)
 [![PyPI version](https://badge.fury.io/py/deepspeed.svg)](https://pypi.org/project/deepspeed/)
 [![Downloads](https://static.pepy.tech/badge/deepspeed)](https://pepy.tech/project/deepspeed)
